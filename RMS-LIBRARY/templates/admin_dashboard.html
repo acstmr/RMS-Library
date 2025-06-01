@@ -1,0 +1,273 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8" />
+    <title>Librain - Dashboard</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Arial, sans-serif;
+            display: flex;
+            min-height: 100vh;
+            background: #f8f9fc;
+        }
+
+        .appbar {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 64px;
+            background: #4834d4;
+            display: flex;
+            align-items: center;
+            padding: 0 1.5rem;
+            z-index: 1000;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+        }
+
+        .appbar-logo {
+            height: 240px;
+            width: auto;
+            position: relative;
+            right: 10px;
+        }
+
+        .content-wrapper {
+            display: flex;
+            width: 100%;
+            margin-top: 64px;
+        }
+
+        .sidebar {
+            width: 250px;
+            background: #4834d4;
+            color: white;
+            padding: 2rem 0;
+            display: flex;
+            flex-direction: column;
+            height: calc(100vh - 64px);
+            position: fixed;
+        }
+
+        .logo-container {
+            padding: 0 1.5rem;
+            display: flex;
+            justify-content: center;
+        }
+
+        .logo-container img {
+            width: 240px;
+            height: auto;
+        }
+
+        .welcome-text {
+            padding: 1rem 1.5rem;
+            font-size: 1.25rem;
+            font-weight: 500;
+            border-top: 3.5px solid rgba(255, 255, 255, 0.1);
+            border-bottom: 3.5px solid rgba(255, 255, 255, 0.1);
+            margin: 0 1rem 1.5rem 1rem;
+        }
+
+        .nav-links {
+            display: flex;
+            flex-direction: column;
+        }
+
+        .nav-link {
+            padding: 0.875rem 1.5rem;
+            color: white;
+            text-decoration: none;
+            font-size: 1rem;
+            transition: background 0.2s;
+            display: flex;
+            align-items: center;
+        }
+
+        .nav-link:hover, .nav-link.active {
+            background: rgba(255, 255, 255, 0.1);
+        }
+
+        .main-content {
+            flex: 1;
+            padding: 2rem;
+            background: #f8f9fc;
+            margin-left: 250px;
+        }
+
+        .header {
+            display: flex;
+            align-items: center;
+            margin-bottom: 2rem;
+            padding-bottom: 1rem;
+            border-bottom: 1px solid #e5e7eb;
+        }
+
+        .header h1 {
+            font-size: 1.5rem;
+            color: #1a1a1a;
+            font-weight: 600;
+        }
+
+        .header span {
+            color: #666;
+            margin-left: 0.5rem;
+            font-size: 0.875rem;
+            font-weight: normal;
+        }
+
+        .cards-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(400px, 1fr));
+            gap: 1.5rem;
+            margin-top: 1rem;
+        }
+
+        .card {
+            background: white;
+            border-radius: 12px;
+            padding: 1.5rem;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1), 0 1px 3px rgba(0, 0, 0, 0.08);
+            border: 1px solid #e5e7eb;
+            transition: all 0.3s ease;
+            cursor: pointer;
+            text-decoration: none;
+            color: inherit;
+            display: flex;
+            align-items: center;
+            gap: 1.5rem;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .card::after {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: rgba(72, 52, 212, 0.05);
+            opacity: 0;
+            transition: opacity 0.3s ease;
+        }
+
+        .card:hover::after {
+            opacity: 1;
+        }
+
+        .card:hover .card-icon {
+            transform: scale(1.05);
+        }
+
+        .card-icon {
+            width: 100px;
+            transition: transform 0.3s ease;
+        }
+
+        .card-icon-container {
+            background: rgba(72, 52, 212, 0.1);
+            border-radius: 10px;
+            padding: 1rem;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            min-width: 100px;
+            height: 100px;
+        }
+
+        .card-content {
+            flex: 1;
+        }
+
+        .card h3 {
+            font-size: 1.25rem;
+            color: #1a1a1a;
+            margin-bottom: 0.5rem;
+            font-weight: 600;
+        }
+
+        .card p {
+            font-size: 0.875rem;
+            color: #666;
+            line-height: 1.5;
+        }
+
+        @media (max-width: 768px) {
+            .content-wrapper {
+                flex-direction: column;
+                margin-top: 56px;
+            }
+            .sidebar {
+                width: 100%;
+                height: auto;
+                position: static;
+                padding: 1rem;
+            }
+            .main-content {
+                margin-left: 0;
+                padding: 1rem;
+            }
+            .appbar {
+                height: 56px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="appbar">
+        <img src="{{ url_for('static', filename='images/Logo 5.png') }}" alt="Librain Logo" class="appbar-logo">
+    </div>
+    
+    <div class="content-wrapper">
+        <div class="sidebar">
+            <div class="logo-container">
+                <img src="{{ url_for('static', filename='images/Logo 3.png') }}" alt="Librain Logo">
+            </div>
+            <div class="welcome-text">
+                Hello, {{ session['username'] }}!
+            </div>
+            <nav class="nav-links">
+                <a href="/dashboard" class="nav-link active">Dashboard</a>
+                <a href="/admin/students-admin" class="nav-link">Manage Students</a>
+                <a href="/admin/books-admin" class="nav-link">Manage Books</a>
+                <a href="/logout" class="nav-link">Logout</a>
+            </nav>
+        </div>
+
+        <div class="main-content">
+            <div class="header">
+                <h1>Dashboard <span>Welcome</span></h1>
+            </div>
+
+            <div class="cards-grid">
+                <a href="/admin/students-admin" class="card" title="Manage Students">
+                    <div class="card-icon-container">
+                        <img src="{{ url_for('static', filename='images/student-icon.png') }}" alt="Students" class="card-icon" style="filter: brightness(0.8);">
+                    </div>
+                    <div class="card-content">
+                        <h3>Manage Students</h3>
+                        <p>Add, update, or remove student records and their information.</p>
+                    </div>
+                </a>
+
+                <a href="/admin/books-admin" class="card" title="Manage Books">
+                    <div class="card-icon-container">
+                        <img src="{{ url_for('static', filename='images/book-icon.png') }}" alt="Books" class="card-icon" style="filter: brightness(0.8);">
+                    </div>
+                    <div class="card-content">
+                        <h3>Manage Books</h3>
+                        <p>Add, update, or remove books and track their availability.</p>
+                    </div>
+                </a>
+            </div>
+        </div>
+    </div>
+</body>
+</html> 

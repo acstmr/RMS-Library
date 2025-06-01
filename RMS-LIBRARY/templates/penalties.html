@@ -1,0 +1,970 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Librain - Student Penalties</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Arial, sans-serif;
+            background: #f8f9fc;
+            margin: 0;
+            min-height: 100vh;
+            display: flex;
+        }
+
+        .appbar {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 64px;
+            background: #4834d4;
+            display: flex;
+            align-items: center;
+            padding: 0 1.5rem;
+            z-index: 1000;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+        }
+
+        .appbar-logo {
+            height: 240px;
+            width: auto;
+            position: relative;
+            right: 10px;
+        }
+
+        .sidebar {
+            width: 250px;
+            background: #4834d4;
+            color: white;
+            padding: 2rem 0;
+            display: flex;
+            flex-direction: column;
+            height: calc(100vh - 64px);
+            position: fixed;
+            margin-top: 64px;
+        }
+
+        .logo-container {
+            padding: 0 1.5rem;
+            display: flex;
+            justify-content: center;
+        }
+
+        .logo-container img {
+            width: 240px;
+            height: auto;
+        }
+
+        .welcome-text {
+            padding: 1rem 1.5rem;
+            font-size: 1.25rem;
+            font-weight: 500;
+            border-top: 3.5px solid rgba(255, 255, 255, 0.1);
+            border-bottom: 3.5px solid rgba(255, 255, 255, 0.1);
+            margin: 0 1rem 1.5rem 1rem;
+        }
+
+        .nav-links {
+            display: flex;
+            flex-direction: column;
+        }
+
+        .nav-link {
+            padding: 0.875rem 1.5rem;
+            color: white;
+            text-decoration: none;
+            font-size: 1rem;
+            transition: background 0.2s;
+            display: flex;
+            align-items: center;
+        }
+
+        .nav-link:hover, .nav-link.active {
+            background: rgba(255, 255, 255, 0.1);
+        }
+
+        .main-content {
+            flex: 1;
+            padding: 2rem;
+            margin-left: 250px;
+            margin-top: 64px;
+        }
+
+        .page-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 2rem;
+            padding-bottom: 1rem;
+            border-bottom: 1px solid #e5e7eb;
+        }
+
+        .page-header h1 {
+            font-size: 1.5rem;
+            color: #1a1a1a;
+            font-weight: 600;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            background: white;
+            border-radius: 12px;
+            overflow: hidden;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.05);
+            margin-bottom: 2rem;
+        }
+
+        th {
+            background: #4834d4;
+            color: white;
+            font-weight: 500;
+            text-align: left;
+            padding: 1rem;
+            font-size: 0.875rem;
+        }
+
+        td {
+            padding: 1rem;
+            border-bottom: 1px solid #f1f1f1;
+            font-size: 0.875rem;
+        }
+
+        tr:last-child td {
+            border-bottom: none;
+        }
+
+        tr:hover {
+            background: #f8f9fc;
+        }
+
+        .update-btn {
+            background: #4834d4;
+            color: white;
+            border: none;
+            border-radius: 6px;
+            padding: 0.5rem 1rem;
+            font-size: 0.875rem;
+            cursor: pointer;
+            transition: all 0.2s;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            min-width: 120px;
+        }
+
+        .update-btn:hover {
+            background: #3c2bb3;
+            transform: translateY(-1px);
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+        }
+
+        .update-btn:active {
+            transform: translateY(0);
+            box-shadow: none;
+        }
+
+        .update-form {
+            background: #f8f9fc;
+            padding: 1rem;
+            border-bottom: 1px solid #e5e7eb;
+        }
+
+        .form-group {
+            display: flex;
+            gap: 1rem;
+            align-items: center;
+            margin-bottom: 1rem;
+        }
+
+        .form-group:last-child {
+            margin-bottom: 0;
+        }
+
+        .form-group label {
+            font-size: 0.875rem;
+            color: #4b5563;
+            min-width: 100px;
+        }
+
+        .form-group input,
+        .form-group select {
+            padding: 0.5rem;
+            border: 1px solid #e5e7eb;
+            border-radius: 4px;
+            font-size: 0.875rem;
+            flex: 1;
+            max-width: 200px;
+        }
+
+        .save-btn {
+            background: #4834d4;
+            color: white;
+            border: none;
+            border-radius: 4px;
+            padding: 0.5rem 1rem;
+            font-size: 0.875rem;
+            cursor: pointer;
+            transition: background 0.2s;
+        }
+
+        .save-btn:hover {
+            background: #3c2bb3;
+        }
+
+        .penalty-status {
+            display: inline-block;
+            padding: 0.5rem 1rem;
+            border-radius: 6px;
+            font-size: 0.875rem;
+            font-weight: 500;
+            text-align: center;
+            min-width: 100px;
+        }
+
+        .penalty-status.pending {
+            background: #FEF3C7;
+            color: #D97706;
+        }
+
+        .penalty-status.served {
+            background: #D1FAE5;
+            color: #059669;
+        }
+
+        .status-toggle {
+            width: 2.5rem;
+            height: 1.25rem;
+            background-color: #E5E7EB;
+            border-radius: 9999px;
+            position: relative;
+            cursor: pointer;
+            transition: background-color 0.2s;
+        }
+
+        .status-toggle:checked {
+            background-color: #4834d4;
+        }
+
+        .status-toggle::after {
+            content: '';
+            position: absolute;
+            top: 0.125rem;
+            left: 0.125rem;
+            width: 1rem;
+            height: 1rem;
+            background-color: white;
+            border-radius: 50%;
+            transition: transform 0.2s;
+        }
+
+        .status-toggle:checked::after {
+            transform: translateX(1.25rem);
+        }
+
+        .stats-cards {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 1.5rem;
+            margin-bottom: 2rem;
+        }
+
+        .stat-card {
+            background: white;
+            border-radius: 12px;
+            padding: 1.5rem;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.05);
+            text-align: center;
+        }
+
+        .stat-card h3 {
+            color: #4b5563;
+            font-size: 0.875rem;
+            font-weight: 500;
+            margin-bottom: 0.5rem;
+        }
+
+        .stat-card p {
+            color: #1a1a1a;
+            font-size: 1.5rem;
+            font-weight: 600;
+        }
+
+        .search-filter {
+            display: flex;
+            gap: 1rem;
+            margin-bottom: 1.5rem;
+        }
+
+        .search-filter input,
+        .search-filter select {
+            padding: 0.75rem;
+            border: 1px solid #e5e7eb;
+            border-radius: 8px;
+            font-size: 0.875rem;
+            outline: none;
+            transition: border-color 0.2s;
+        }
+
+        .search-filter input {
+            flex: 1;
+        }
+
+        .search-filter input:focus,
+        .search-filter select:focus {
+            border-color: #4834d4;
+        }
+
+        .flash-messages {
+            margin-bottom: 1.5rem;
+        }
+
+        .flash-messages ul {
+            list-style: none;
+            padding: 0;
+        }
+
+        .flash-messages li {
+            padding: 1rem;
+            border-radius: 8px;
+            margin-bottom: 0.5rem;
+        }
+
+        .flash-messages li.success {
+            background: #dcfce7;
+            color: #166534;
+        }
+
+        .flash-messages li.error {
+            background: #fee2e2;
+            color: #991b1b;
+        }
+
+        .student-info {
+            display: flex;
+            flex-direction: column;
+            gap: 0.25rem;
+        }
+
+        .student-name {
+            font-weight: 500;
+            color: #1a1a1a;
+        }
+
+        .student-details {
+            font-size: 0.75rem;
+            color: #6b7280;
+        }
+
+        .book-info {
+            display: flex;
+            flex-direction: column;
+            gap: 0.25rem;
+        }
+
+        .book-title {
+            font-weight: 500;
+            color: #1a1a1a;
+        }
+
+        .book-author {
+            font-size: 0.75rem;
+            color: #6b7280;
+        }
+
+        .dates-info {
+            display: flex;
+            flex-direction: column;
+            gap: 0.25rem;
+            font-size: 0.75rem;
+        }
+
+        .dates-info span {
+            color: #6b7280;
+        }
+
+        .dates-info .overdue {
+            color: #dc2626;
+        }
+
+        .action-buttons {
+            display: flex;
+            gap: 0.5rem;
+            align-items: center;
+        }
+
+        .edit-btn {
+            background: #4834d4;
+            color: white;
+            border: none;
+            border-radius: 8px;
+            padding: 0.625rem 1rem;
+            font-size: 0.875rem;
+            font-weight: 500;
+            cursor: pointer;
+            transition: all 0.2s;
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+            min-width: 90px;
+            justify-content: center;
+        }
+
+        .edit-btn:hover {
+            background: #3c2bb3;
+            transform: translateY(-1px);
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+        }
+
+        .edit-btn:active {
+            transform: translateY(0);
+            box-shadow: none;
+        }
+
+        .delete-btn {
+            background: #fee2e2;
+            color: #dc2626;
+            border: none;
+            border-radius: 8px;
+            padding: 0.625rem 1rem;
+            font-size: 0.875rem;
+            font-weight: 500;
+            cursor: pointer;
+            transition: all 0.2s;
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+            min-width: 90px;
+            justify-content: center;
+        }
+
+        .delete-btn:hover {
+            background: #fecaca;
+            transform: translateY(-1px);
+            box-shadow: 0 2px 4px rgba(220, 38, 38, 0.1);
+        }
+
+        .delete-btn:active {
+            transform: translateY(0);
+            box-shadow: none;
+        }
+
+        .modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: rgba(0, 0, 0, 0.5);
+            z-index: 1000;
+            align-items: center;
+            justify-content: center;
+            backdrop-filter: blur(4px);
+        }
+
+        .modal-content {
+            background: white;
+            border-radius: 12px;
+            padding: 2rem;
+            width: 90%;
+            max-width: 400px;
+            position: relative;
+            box-shadow: 0 8px 16px rgba(0, 0, 0, 0.1);
+            animation: modalSlideIn 0.3s ease-out;
+        }
+
+        @keyframes modalSlideIn {
+            from {
+                transform: translateY(-20px);
+                opacity: 0;
+            }
+            to {
+                transform: translateY(0);
+                opacity: 1;
+            }
+        }
+
+        .modal-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 1.5rem;
+            padding-bottom: 1rem;
+            border-bottom: 1px solid #e5e7eb;
+        }
+
+        .modal-header h2 {
+            font-size: 1.25rem;
+            color: #1a1a1a;
+            font-weight: 600;
+            margin: 0;
+        }
+
+        .close-btn {
+            background: none;
+            border: none;
+            font-size: 1.5rem;
+            cursor: pointer;
+            color: #6b7280;
+            padding: 0.5rem;
+            transition: all 0.2s;
+            line-height: 1;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            width: 32px;
+            height: 32px;
+        }
+
+        .close-btn:hover {
+            color: #1a1a1a;
+            background: #f3f4f6;
+        }
+
+        .form-group {
+            margin-bottom: 1.5rem;
+        }
+
+        .form-group label {
+            display: block;
+            margin-bottom: 0.5rem;
+            font-size: 0.875rem;
+            color: #4b5563;
+            font-weight: 500;
+        }
+
+        .form-group select {
+            width: 100%;
+            padding: 0.75rem;
+            border: 1px solid #e5e7eb;
+            border-radius: 8px;
+            font-size: 0.875rem;
+            color: #1a1a1a;
+            background: white;
+            transition: all 0.2s;
+            cursor: pointer;
+            appearance: none;
+            background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' fill='none' viewBox='0 0 24 24' stroke='%236b7280'%3E%3Cpath stroke-linecap='round' stroke-linejoin='round' stroke-width='2' d='M19 9l-7 7-7-7'%3E%3C/path%3E%3C/svg%3E");
+            background-repeat: no-repeat;
+            background-position: right 0.75rem center;
+            background-size: 1rem;
+            padding-right: 2.5rem;
+        }
+
+        .form-group select:hover {
+            border-color: #a1a1aa;
+        }
+
+        .form-group select:focus {
+            border-color: #4834d4;
+            outline: none;
+            box-shadow: 0 0 0 3px rgba(72, 52, 212, 0.1);
+        }
+
+        .modal-footer {
+            display: flex;
+            justify-content: flex-end;
+            gap: 1rem;
+            margin-top: 2rem;
+            padding-top: 1rem;
+            border-top: 1px solid #e5e7eb;
+        }
+
+        .save-btn {
+            background: #4834d4;
+            color: white;
+            border: none;
+            border-radius: 8px;
+            padding: 0.75rem 1.5rem;
+            font-size: 0.875rem;
+            font-weight: 500;
+            cursor: pointer;
+            transition: all 0.2s;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            min-width: 100px;
+        }
+
+        .save-btn:hover {
+            background: #3c2bb3;
+            transform: translateY(-1px);
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+        }
+
+        .save-btn:active {
+            transform: translateY(0);
+        }
+
+        .cancel-btn {
+            background: #f3f4f6;
+            color: #4b5563;
+            border: none;
+            border-radius: 8px;
+            padding: 0.75rem 1.5rem;
+            font-size: 0.875rem;
+            font-weight: 500;
+            cursor: pointer;
+            transition: all 0.2s;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            min-width: 100px;
+        }
+
+        .cancel-btn:hover {
+            background: #e5e7eb;
+            color: #1f2937;
+        }
+    </style>
+</head>
+<body>
+    <div class="appbar">
+        <img src="{{ url_for('static', filename='images/Logo 5.png') }}" alt="Librain Logo" class="appbar-logo">
+    </div>
+
+    <div class="sidebar">
+        <div class="logo-container">
+            <img src="{{ url_for('static', filename='images/Logo 3.png') }}" alt="Librain Logo">
+        </div>
+        <div class="welcome-text">
+            Hello, {{ username }}!
+        </div>
+        <nav class="nav-links">
+            <a href="/librarian/dashboard" class="nav-link">Dashboard</a>
+            <a href="/librarian/borrow-transactions" class="nav-link">Student Transactions</a>
+            <a href="/librarian/penalties" class="nav-link active">Student Penalties</a>
+            <a href="/logout" class="nav-link">Logout</a>
+        </nav>
+    </div>
+
+    <div class="main-content">
+        <div class="page-header">
+            <h1>Student Penalties</h1>
+        </div>
+
+        <!-- Flash Messages -->
+        <div class="flash-messages">
+            {% with messages = get_flashed_messages(with_categories=true) %}
+                {% if messages %}
+                    <ul>
+                    {% for category, message in messages %}
+                        <li class="{{ category }}">{{ message }}</li>
+                    {% endfor %}
+                    </ul>
+                {% endif %}
+            {% endwith %}
+        </div>
+
+        <!-- Statistics Cards -->
+        <div class="stats-cards">
+            <div class="stat-card">
+                <h3>Total Penalties</h3>
+                <p>{{ stats.total_penalties }}</p>
+            </div>
+            <div class="stat-card">
+                <h3>Pending Penalties</h3>
+                <p>{{ stats.pending_penalties }}</p>
+            </div>
+            <div class="stat-card">
+                <h3>Total Duty Hours</h3>
+                <p>{{ "%.1f"|format(stats.total_duty_hours) }}</p>
+            </div>
+        </div>
+
+        <!-- Search and Filter -->
+        <div class="search-filter">
+            <input type="text" id="searchInput" placeholder="Search by student name or number...">
+            <select id="statusFilter">
+                <option value="">All Status</option>
+                <option value="1">Served</option>
+                <option value="0">Pending</option>
+            </select>
+        </div>
+
+        <!-- Penalties Table -->
+        <table>
+            <thead>
+                <tr>
+                    <th>Penalty ID</th>
+                    <th>Student</th>
+                    <th>Book</th>
+                    <th>Dates</th>
+                    <th>Days Late</th>
+                    <th>Duty Hours</th>
+                    <th>Status</th>
+                    <th>Actions</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for penalty in penalties %}
+                <tr data-penalty-id="{{ penalty.penalty_id }}">
+                    <td>{{ penalty.penalty_id }}</td>
+                    <td>
+                        <div class="student-info">
+                            <span class="student-name">{{ penalty.student_full_name }}</span>
+                            <span class="student-details">
+                                ID: {{ penalty.student_number }}<br>
+                                Course: {{ penalty.student_course }}
+                            </span>
+                        </div>
+                    </td>
+                    <td>
+                        <div class="book-info">
+                            <span class="book-title">{{ penalty.book_title }}</span>
+                            <span class="book-author">by {{ penalty.book_author }}</span>
+                        </div>
+                    </td>
+                    <td>
+                        <div class="dates-info">
+                            <span>Borrowed: {{ penalty.borrow_date }}</span>
+                            <span>Due: {{ penalty.due_date }}</span>
+                            <span class="overdue">Returned: {{ penalty.return_date }}</span>
+                        </div>
+                    </td>
+                    <td>{{ penalty.days_late }}</td>
+                    <td>{{ "%.1f"|format(penalty.duty_hours) }}</td>
+                    <td>
+                        <span class="penalty-status {{ 'served' if penalty.is_served else 'pending' }}">
+                            {{ 'Served' if penalty.is_served else 'Pending' }}
+                        </span>
+                    </td>
+                    <td>
+                        <div class="action-buttons">
+                            <button type="button" 
+                                    class="edit-btn"
+                                    data-action="edit"
+                                    data-penalty-id="{{ penalty.penalty_id }}"
+                                    data-is-served="{{ '1' if penalty.is_served else '0' }}">
+                                Edit
+                            </button>
+                            <button type="button" 
+                                    class="delete-btn"
+                                    data-action="delete"
+                                    data-penalty-id="{{ penalty.penalty_id }}">
+                                Delete
+                            </button>
+                        </div>
+                    </td>
+                </tr>
+                {% else %}
+                <tr>
+                    <td colspan="8" style="text-align: center; padding: 2rem;">No penalties recorded.</td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+
+    <!-- Add modal HTML before closing body tag -->
+    <div id="editModal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2>Edit Penalty Status</h2>
+                <button type="button" class="close-btn" onclick="closeEditModal()">×</button>
+            </div>
+            <form id="editForm" onsubmit="return handleEditSubmit(event)">
+                <input type="hidden" id="editPenaltyId" name="penalty_id">
+                <div class="form-group">
+                    <label for="editStatus">Status</label>
+                    <select id="editStatus" name="is_served" required>
+                        <option value="1">Served</option>
+                        <option value="0">Pending</option>
+                    </select>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="cancel-btn" onclick="closeEditModal()">Cancel</button>
+                    <button type="submit" class="save-btn">Save Changes</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <script>
+        function toggleUpdateForm(penaltyId) {
+            const form = document.getElementById('updateForm-' + penaltyId);
+            if (form) {
+                form.style.display = form.style.display === 'none' || form.style.display === '' ? 'table-row' : 'none';
+            }
+        }
+
+        // Search and filter functionality
+        document.addEventListener('DOMContentLoaded', function() {
+            const searchInput = document.getElementById('searchInput');
+            const statusFilter = document.getElementById('statusFilter');
+            const tbody = document.querySelector('table tbody');
+            const rows = Array.from(tbody.getElementsByTagName('tr')).filter(row => !row.id.startsWith('updateForm'));
+
+            function filterTable() {
+                const searchTerm = searchInput.value.toLowerCase();
+                const statusValue = statusFilter.value;
+
+                rows.forEach(row => {
+                    const studentInfo = row.querySelector('.student-info');
+                    if (!studentInfo) return; // Skip if not a data row
+
+                    const studentText = studentInfo.textContent.toLowerCase();
+                    const statusBadge = row.querySelector('.penalty-status');
+                    const isServed = statusBadge ? statusBadge.classList.contains('served') : false;
+                    const statusMatch = !statusValue || 
+                        (statusValue === '1' && isServed) || 
+                        (statusValue === '0' && !isServed);
+
+                    const searchMatch = !searchTerm || studentText.includes(searchTerm);
+                    row.style.display = statusMatch && searchMatch ? '' : 'none';
+
+                    // Hide/show update form row
+                    const updateFormId = 'updateForm-' + row.cells[0].textContent;
+                    const updateForm = document.getElementById(updateFormId);
+                    if (updateForm) {
+                        updateForm.style.display = 'none';
+                    }
+                });
+            }
+
+            searchInput.addEventListener('input', filterTable);
+            statusFilter.addEventListener('change', filterTable);
+        });
+
+        function openEditModal(penaltyId, currentStatus) {
+            const modal = document.getElementById('editModal');
+            const form = document.getElementById('editForm');
+            const statusSelect = document.getElementById('editStatus');
+            
+            document.getElementById('editPenaltyId').value = penaltyId;
+            statusSelect.value = currentStatus;
+            
+            modal.style.display = 'flex';
+        }
+
+        function closeEditModal() {
+            document.getElementById('editModal').style.display = 'none';
+        }
+
+        async function handleEditSubmit(event) {
+            event.preventDefault();
+            
+            const form = event.target;
+            const penaltyId = document.getElementById('editPenaltyId').value;
+            const status = document.getElementById('editStatus').value;
+            
+            try {
+                const response = await fetch(`/librarian/edit-penalty/${penaltyId}`, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/x-www-form-urlencoded',
+                        'X-Requested-With': 'XMLHttpRequest'
+                    },
+                    body: `is_served=${status}`
+                });
+                
+                const data = await response.json();
+                
+                if (response.ok) {
+                    // Update the status badge
+                    const row = document.querySelector(`tr[data-penalty-id="${penaltyId}"]`);
+                    const statusCell = row.querySelector('.penalty-status');
+                    if (statusCell) {
+                        statusCell.textContent = status === '1' ? 'Served' : 'Pending';
+                        statusCell.className = `penalty-status ${status === '1' ? 'served' : 'pending'}`;
+                    }
+                    
+                    // Update stats
+                    updateStatsCards();
+                    
+                    // Close modal
+                    closeEditModal();
+                } else {
+                    alert('Failed to update penalty status: ' + (data.error || 'Unknown error'));
+                }
+            } catch (error) {
+                console.error('Error updating penalty status:', error);
+                alert('Failed to update penalty status. Please try again.');
+            }
+        }
+
+        async function deletePenalty(penaltyId) {
+            if (!confirm('Are you sure you want to delete this penalty?')) {
+                return;
+            }
+            
+            try {
+                const response = await fetch(`/librarian/delete-penalty/${penaltyId}`, {
+                    method: 'POST',
+                    headers: {
+                        'X-Requested-With': 'XMLHttpRequest'
+                    }
+                });
+                
+                if (response.ok) {
+                    // Remove the row from the table
+                    const row = document.querySelector(`tr[data-penalty-id="${penaltyId}"]`);
+                    if (row) {
+                        row.remove();
+                    }
+                    
+                    // Update stats
+                    updateStatsCards();
+                } else {
+                    const data = await response.json();
+                    alert('Failed to delete penalty: ' + (data.error || 'Unknown error'));
+                }
+            } catch (error) {
+                console.error('Error deleting penalty:', error);
+                alert('Failed to delete penalty. Please try again.');
+            }
+        }
+
+        // Close modal when clicking outside
+        window.onclick = function(event) {
+            const modal = document.getElementById('editModal');
+            if (event.target === modal) {
+                closeEditModal();
+            }
+        }
+
+        function updateStatsCards() {
+            // Get all penalties
+            const penalties = document.querySelectorAll('.penalty-status');
+            const totalPenalties = penalties.length;
+            const pendingPenalties = Array.from(penalties).filter(p => p.classList.contains('pending')).length;
+            
+            // Update stats if the elements exist
+            const totalElement = document.querySelector('.stat-card:nth-child(1) p');
+            const pendingElement = document.querySelector('.stat-card:nth-child(2) p');
+            
+            if (totalElement) totalElement.textContent = totalPenalties;
+            if (pendingElement) pendingElement.textContent = pendingPenalties;
+        }
+
+        // Add event listeners for edit and delete buttons
+        document.addEventListener('DOMContentLoaded', function() {
+            // Edit button handlers
+            document.querySelectorAll('.edit-btn').forEach(button => {
+                button.addEventListener('click', function() {
+                    const penaltyId = this.getAttribute('data-penalty-id');
+                    const isServed = this.getAttribute('data-is-served');
+                    openEditModal(penaltyId, isServed);
+                });
+            });
+
+            // Delete button handlers
+            document.querySelectorAll('.delete-btn').forEach(button => {
+                button.addEventListener('click', function() {
+                    const penaltyId = this.getAttribute('data-penalty-id');
+                    deletePenalty(penaltyId);
+                });
+            });
+        });
+    </script>
+</body>
+</html>

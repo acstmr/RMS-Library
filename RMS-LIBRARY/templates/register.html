@@ -1,0 +1,299 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8" />
+    <title>Librain - Register</title>
+    <style>
+        body {
+            margin: 0;
+            height: 100vh;
+            font-family: 'Segoe UI', Arial, sans-serif;
+            display: flex;
+            background: url("{{ url_for('static', filename='images/background.gif') }}") no-repeat center center;
+            background-size: 75%;
+            background-position: left;
+            justify-content: flex-end;
+        }
+        
+        .right-side {
+            width: 480px;
+            height: 100vh;
+            background: #fff;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 3rem;
+            box-sizing: border-box;
+            position: relative;
+        }
+
+        .logo {
+            width: 180px;
+            height: auto;
+            position: absolute;
+            bottom: 54rem;
+            left: 0.1rem;
+        }
+
+        .register-container {
+            width: 100%;
+            max-width: 300px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+
+        h2 {
+            text-align: center;
+            color: #1a1a1a;
+            margin-bottom: 2rem;
+            font-size: 1.75rem;
+            font-weight: 600;
+        }
+
+        label {
+            color: #333;
+            font-size: 0.875rem;
+            font-weight: 500;
+            display: block;
+            margin-bottom: 0.5rem;
+        }
+
+        input[type="text"], input[type="password"], input[type="email"] {
+            width: 100%;
+            padding: 0.875rem;
+            margin-bottom: 1.25rem;
+            border: 1px solid #e0e0e0;
+            border-radius: 8px;
+            font-size: 0.875rem;
+            background: #fff;
+            transition: all 0.2s;
+            box-sizing: border-box;
+        }
+
+        input[type="text"]:focus, input[type="password"]:focus, input[type="email"]:focus {
+            border-color: #4834d4;
+            outline: none;
+            box-shadow: 0 0 0 1px rgba(72, 52, 212, 0.1);
+        }
+
+        button {
+            width: 100%;
+            padding: 0.875rem;
+            background: #4834d4;
+            color: #fff;
+            border: none;
+            border-radius: 8px;
+            font-size: 0.875rem;
+            font-weight: 500;
+            cursor: pointer;
+            transition: background 0.2s;
+            margin-top: 0.5rem;
+        }
+
+        button:hover {
+            background: #3c2aa8;
+        }
+
+        .message {
+            text-align: left;
+            margin-bottom: 1rem;
+            padding: 0.75rem;
+            border-radius: 4px;
+            font-size: 0.875rem;
+        }
+
+        .login-link {
+            text-align: center;
+            margin-top: 1.25rem;
+            font-size: 0.813rem;
+            color: #666;
+        }
+
+        .login-link a {
+            color: #4834d4;
+            text-decoration: none;
+            font-weight: 500;
+            margin-left: 0.25rem;
+        }
+
+        .login-link a:hover {
+            text-decoration: underline;
+        }
+
+        .role-selection {
+            display: flex;
+            gap: 1rem;
+            margin-bottom: 1.25rem;
+            width: 100%;
+        }
+
+        .role-card {
+            flex: 1;
+            border: 2px solid #e0e0e0;
+            border-radius: 12px;
+            padding: 1rem;
+            text-align: center;
+            cursor: pointer;
+            transition: all 0.2s;
+            background: white;
+        }
+
+        .role-card:hover {
+            border-color: #4834d4;
+            background: rgba(72, 52, 212, 0.05);
+        }
+
+        .role-card.selected {
+            border-color: #4834d4;
+            background: rgba(72, 52, 212, 0.05);
+        }
+
+        .role-card img {
+            width: 64px;
+            height: 64px;
+            margin-bottom: 0.5rem;
+        }
+
+        .role-card .role-title {
+            color: #1a1a1a;
+            font-weight: 500;
+            font-size: 0.875rem;
+            margin-top: 0.5rem;
+        }
+
+        #role {
+            display: none;
+        }
+
+        @media (max-width: 768px) {
+            body {
+                justify-content: center;
+            }
+            .right-side {
+                width: calc(100% - 2rem);
+                height: auto;
+                margin: 1rem;
+                padding: 2rem 1.5rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="right-side">
+        <img src="{{ url_for('static', filename='images/Logo 2.png') }}" alt="Librain Logo" class="logo">
+        <div class="register-container">
+            <h2>Register</h2>
+            {% if error %}
+                <div class="message" style="background: #FEE2E2; color: #DC2626;">{{ error }}</div>
+            {% endif %}
+            {% if success %}
+                <div class="message" style="background: #DCFCE7; color: #16A34A;">{{ success }}</div>
+            {% endif %}
+            <form method="POST" action="{{ url_for('register') }}" onsubmit="return validateForm()">
+                <label for="username">Username:</label>
+                <input type="text" id="username" name="username" placeholder="Enter your username" required>
+
+                <label for="full_name">Full Name:</label>
+                <input type="text" id="full_name" name="full_name" placeholder="Enter your full name" required>
+
+                <label>Select Role:</label>
+                <div class="role-selection">
+                    <div class="role-card" id="admin-card">
+                        <img src="{{ url_for('static', filename='images/admin-icon.png') }}" alt="Admin">
+                        <div class="role-title">Admin</div>
+                    </div>
+                    <div class="role-card" id="librarian-card">
+                        <img src="{{ url_for('static', filename='images/librarian-icon.png') }}" alt="Librarian">
+                        <div class="role-title">Librarian</div>
+                    </div>
+                </div>
+                <select name="role" id="role" required>
+                    <option value="admin">Admin</option>
+                    <option value="librarian">Librarian</option>
+                </select>
+
+                <label for="password">Password:</label>
+                <input type="password" id="password" name="password" placeholder="Enter your password" required>
+
+                <label for="confirm_password">Confirm Password:</label>
+                <input type="password" id="confirm_password" name="confirm_password" placeholder="Confirm your password" required>
+
+                <button type="submit">Register</button>
+            </form>
+            <div class="login-link">
+                Already have an account?<a href="/">Login</a>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        function selectRole(role) {
+            console.log('Selecting role:', role); // Debug log
+            
+            // Remove selected class from all cards
+            document.querySelectorAll('.role-card').forEach(card => {
+                card.classList.remove('selected');
+            });
+            
+            // Add selected class to clicked card
+            const selectedCard = document.getElementById(`${role}-card`);
+            if (selectedCard) {
+                selectedCard.classList.add('selected');
+                // Update hidden select value
+                document.getElementById('role').value = role;
+            } else {
+                console.error('Card not found for role:', role);
+            }
+        }
+
+        // Initialize the first role as selected
+        window.onload = function() {
+            selectRole('admin');
+        };
+
+        function validateForm() {
+            const username = document.getElementById('username').value.trim();
+            const fullName = document.getElementById('full_name').value.trim();
+            const role = document.getElementById('role').value;
+            const password = document.getElementById('password').value;
+            const confirmPassword = document.getElementById('confirm_password').value;
+
+            if (!username || !fullName || !role || !password || !confirmPassword) {
+                alert('Please fill out all fields');
+                return false;
+            }
+
+            if (password !== confirmPassword) {
+                alert('Passwords do not match');
+                return false;
+            }
+
+            if (!document.querySelector('.role-card.selected')) {
+                alert('Please select a role');
+                return false;
+            }
+
+            return true;
+        }
+
+        // Add click event listeners to role cards
+        document.addEventListener('DOMContentLoaded', function() {
+            const adminCard = document.getElementById('admin-card');
+            const librarianCard = document.getElementById('librarian-card');
+
+            if (adminCard) {
+                adminCard.addEventListener('click', function() {
+                    selectRole('admin');
+                });
+            }
+
+            if (librarianCard) {
+                librarianCard.addEventListener('click', function() {
+                    selectRole('librarian');
+                });
+            }
+        });
+    </script>
+</body>
+</html>

@@ -1,0 +1,164 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8" />
+    <title>Librain - Login</title>
+    <style>
+        body {
+            margin: 0;
+            height: 100vh;
+            font-family: 'Segoe UI', Arial, sans-serif;
+            display: flex;
+            background: url("{{ url_for('static', filename='images/background.gif') }}") no-repeat center center;
+            background-size:75%;
+            background-position: left;
+            justify-content: flex-end;
+        }
+        
+        .right-side {
+            width: 480px;
+            height: 100vh;
+            background: #fff;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 3rem;
+            box-sizing: border-box;
+            position: relative;
+        }
+
+        .logo {
+            width: 180px;
+            height: auto;
+            position: absolute;
+            bottom: 54rem;
+            left: 0.1rem;
+        }
+
+        .login-container {
+            width: 100%;
+            max-width: 300px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+
+        h2 {
+            text-align: center;
+            color: #1a1a1a;
+            margin-bottom: 2rem;
+            font-size: 1.75rem;
+            font-weight: 600;
+        }
+
+        label {
+            color: #333;
+            font-size: 0.875rem;
+            font-weight: 500;
+            display: block;
+            margin-bottom: 0.5rem;
+        }
+
+        input[type="text"], input[type="password"] {
+            width: 100%;
+            padding: 0.875rem;
+            margin-bottom: 1.25rem;
+            border: 1px solid #e0e0e0;
+            border-radius: 8px;
+            font-size: 0.875rem;
+            background: #fff;
+            transition: all 0.2s;
+            box-sizing: border-box;
+        }
+
+        input[type="text"]:focus, input[type="password"]:focus {
+            border-color: #4834d4;
+            outline: none;
+            box-shadow: 0 0 0 1px rgba(72, 52, 212, 0.1);
+        }
+
+        button {
+            width: 100%;
+            padding: 0.875rem;
+            background: #4834d4;
+            color: #fff;
+            border: none;
+            border-radius: 8px;
+            font-size: 0.875rem;
+            font-weight: 500;
+            cursor: pointer;
+            transition: background 0.2s;
+            margin-top: 0.5rem;
+        }
+
+        button:hover {
+            background: #3c2aa8;
+        }
+
+        .message {
+            text-align: left;
+            margin-bottom: 1rem;
+            padding: 0.75rem;
+            border-radius: 4px;
+            font-size: 0.875rem;
+        }
+
+        .register-link {
+            text-align: center;
+            margin-top: 1.25rem;
+            font-size: 0.813rem;
+            color: #666;
+        }
+
+        .register-link a {
+            color: #4834d4;
+            text-decoration: none;
+            font-weight: 500;
+            margin-left: 0.25rem;
+        }
+
+        .register-link a:hover {
+            text-decoration: underline;
+        }
+
+        @media (max-width: 768px) {
+            body {
+                justify-content: center;
+            }
+            .right-side {
+                width: calc(100% - 2rem);
+                height: auto;
+                margin: 1rem;
+                padding: 2rem 1.5rem;
+                box-shadow: 0 0 15px rgba(0, 0, 0, 0.05);
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="right-side">
+        <img src="{{ url_for('static', filename='images/Logo 2.png') }}" alt="Librain Logo" class="logo">
+        <div class="login-container">
+            <h2>Login</h2>
+            {% if error %}
+                <div class="message" style="background: #FEE2E2; color: #DC2626;">{{ error }}</div>
+            {% endif %}
+            {% if success %}
+                <div class="message" style="background: #DCFCE7; color: #16A34A;">{{ success }}</div>
+            {% endif %}
+            <form method="POST" action="/">
+                <label for="username">Username:</label>
+                <input type="text" id="username" name="username" placeholder="Enter your username" required>
+
+                <label for="password">Password:</label>
+                <input type="password" id="password" name="password" placeholder="Enter your password" required>
+
+                <button type="submit">Log in</button>
+            </form>
+            <div class="register-link">
+                Don't you have an account?<a href="/register">Create one</a>
+            </div>
+        </div>
+    </div>
+</body>
+</html>
