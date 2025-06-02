@@ -52,7 +52,7 @@ Running the Application
 2. Activate the virtual environment (if not already activated)
 3. Run the application:
    ```
-   python login-backen.py
+   python login_backend.py
    ```
 4. Open your web browser and navigate to:
    ```
