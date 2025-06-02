@@ -325,7 +325,6 @@
             <button class="add-button" onclick="toggleAddBookForm()">Add New Book</button>
         </div>
 
-        <!-- Add Book Modal -->
         <div id="addBookModal" class="modal" style="display: none;">
             <div class="modal-content">
                 <div class="modal-header">
@@ -404,7 +403,6 @@
                     </td>
                 </tr>
 
-                <!-- Edit Book Modal -->
                 <div id="updateBookModal-{{ book.book_id }}" class="modal" style="display: none;">
                     <div class="modal-content">
                         <div class="modal-header">
@@ -458,10 +456,9 @@
 
     <script>
         function validateShelfNumber(input) {
-            // Remove any non-numeric characters
+
             input.value = input.value.replace(/[^0-9]/g, '');
             
-            // Ensure the value is positive
             if (input.value <= 0) {
                 input.value = '';
             }
@@ -496,7 +493,6 @@
             }
         }
 
-        // Close modal when clicking outside
         window.onclick = function(event) {
             if (event.target.classList.contains('modal')) {
                 event.target.style.display = 'none';

@@ -387,14 +387,12 @@
             }
         }
 
-        // Close modal when clicking outside
         window.onclick = function(event) {
             if (event.target.classList.contains('modal')) {
                 event.target.style.display = 'none';
             }
         }
 
-        // Form validation
         const addStudentForm = document.querySelector('#addStudentModal form');
         if (addStudentForm) {
             addStudentForm.addEventListener('submit', function(e) {
@@ -402,14 +400,12 @@
                 const studentNumber = this.querySelector('input[name="student_number"]');
                 const contactNumber = this.querySelector('input[name="student_contact_number"]');
                 
-                // Clear previous error states
                 [studentNumber, contactNumber].forEach(input => {
                     input.classList.remove('error');
                     const errorMsg = input.nextElementSibling;
                     if (errorMsg) errorMsg.style.display = 'none';
                 });
                 
-                // Validate student number (9 digits)
                 if (!/^[0-9]{9}$/.test(studentNumber.value)) {
                     e.preventDefault();
                     studentNumber.classList.add('error');
@@ -418,7 +414,6 @@
                     hasError = true;
                 }
                 
-                // Validate contact number (11 digits)
                 if (!/^[0-9]{11}$/.test(contactNumber.value)) {
                     e.preventDefault();
                     contactNumber.classList.add('error');
@@ -430,7 +425,6 @@
                 return !hasError;
             });
 
-            // Add input event listeners for number-only fields
             addStudentForm.querySelectorAll('input[pattern]').forEach(input => {
                 input.addEventListener('input', function() {
                     this.value = this.value.replace(/[^0-9]/g, '');
@@ -472,7 +466,6 @@
             <button class="add-button" onclick="toggleAddStudentForm()">Add New Student</button>
         </div>
 
-        <!-- Add Student Modal -->
         <div id="addStudentModal" class="modal" style="display: none;">
             <div class="modal-content">
                 <div class="modal-header">
@@ -594,7 +587,6 @@
                     </td>
                 </tr>
 
-                <!-- Edit Student Modal -->
                 <div id="updateStudentModal-{{ student.student_id }}" class="modal" style="display: none;">
                     <div class="modal-content">
                         <div class="modal-header">

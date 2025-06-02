@@ -229,25 +229,21 @@
 
     <script>
         function selectRole(role) {
-            console.log('Selecting role:', role); // Debug log
+            console.log('Selecting role:', role);
             
-            // Remove selected class from all cards
             document.querySelectorAll('.role-card').forEach(card => {
                 card.classList.remove('selected');
             });
             
-            // Add selected class to clicked card
             const selectedCard = document.getElementById(`${role}-card`);
             if (selectedCard) {
                 selectedCard.classList.add('selected');
-                // Update hidden select value
                 document.getElementById('role').value = role;
             } else {
                 console.error('Card not found for role:', role);
             }
         }
 
-        // Initialize the first role as selected
         window.onload = function() {
             selectRole('admin');
         };
@@ -277,7 +273,6 @@
             return true;
         }
 
-        // Add click event listeners to role cards
         document.addEventListener('DOMContentLoaded', function() {
             const adminCard = document.getElementById('admin-card');
             const librarianCard = document.getElementById('librarian-card');

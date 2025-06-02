@@ -537,18 +537,16 @@
                         }
                     });
                 }
-                // Set default dates
                 const today = new Date().toISOString().split('T')[0];
                 document.querySelector('input[name="borrow_date"]').value = today;
                 const dueDate = new Date();
-                dueDate.setDate(dueDate.getDate() + 7); // Default 7 days borrowing period
+                dueDate.setDate(dueDate.getDate() + 7);
                 document.querySelector('input[name="due_date"]').value = dueDate.toISOString().split('T')[0];
             } else {
                 modal.style.display = 'none';
             }
         }
 
-        // Close modal when clicking outside
         window.onclick = function(event) {
             const modal = document.getElementById('addTransactionModal');
             if (event.target === modal) {
@@ -556,7 +554,6 @@
             }
         }
 
-        // Form validation
         document.addEventListener('DOMContentLoaded', function() {
             const addTransactionForm = document.querySelector('#addTransactionModal form');
             if (addTransactionForm) {
@@ -565,7 +562,6 @@
                     const borrowDate = this.querySelector('input[name="borrow_date"]');
                     const dueDate = this.querySelector('input[name="due_date"]');
                     
-                    // Clear previous error states
                     [borrowDate, dueDate].forEach(input => {
                         input.classList.remove('error');
                         const errorMsg = input.nextElementSibling;
@@ -574,7 +570,6 @@
                         }
                     });
                     
-                    // Validate dates
                     const borrowDateVal = new Date(borrowDate.value);
                     const dueDateVal = new Date(dueDate.value);
                     const today = new Date();
@@ -598,13 +593,11 @@
                 });
             }
 
-            // Dynamic book and student info display
             const bookSelect = document.querySelector('select[name="book_id"]');
             const studentSelect = document.querySelector('select[name="student_id"]');
 
             if (bookSelect) {
                 bookSelect.addEventListener('change', function() {
-                    // In a real implementation, this would fetch book details from the server
                     const bookInfo = document.getElementById('bookInfo');
                     if (bookInfo) {
                         bookInfo.style.display = 'block';
@@ -614,7 +607,6 @@
 
             if (studentSelect) {
                 studentSelect.addEventListener('change', function() {
-                    // In a real implementation, this would fetch student details from the server
                     const studentInfo = document.getElementById('studentInfo');
                     if (studentInfo) {
                         studentInfo.style.display = 'block';
@@ -696,7 +688,6 @@
             <button class="add-button" onclick="toggleAddTransactionForm()">Add New Transaction</button>
         </div>
 
-        <!-- Flash Messages -->
         <div class="flash-messages">
             {% with messages = get_flashed_messages(with_categories=true) %}
                 {% if messages %}
@@ -709,7 +700,6 @@
             {% endwith %}
         </div>
 
-        <!-- Add Transaction Modal -->
         <div id="addTransactionModal" class="modal">
             <div class="modal-content">
                 <div class="modal-header">
@@ -790,7 +780,6 @@
             </div>
         </div>
 
-        <!-- Transactions Table -->
         <table>
             <thead>
                 <tr>
