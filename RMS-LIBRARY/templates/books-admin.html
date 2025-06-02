@@ -403,6 +403,54 @@
                         </form>
                     </td>
                 </tr>
+
+                <!-- Edit Book Modal -->
+                <div id="updateBookModal-{{ book.book_id }}" class="modal" style="display: none;">
+                    <div class="modal-content">
+                        <div class="modal-header">
+                            <h2>Edit Book Information</h2>
+                            <button type="button" class="close-button" onclick="toggleUpdateForm('{{ book.book_id }}')">&times;</button>
+                        </div>
+                        <form method="POST" action="{{ url_for('admin_bp.update_book', book_id=book.book_id) }}" class="update-book-form">
+                            <div class="form-group">
+                                <label>Title</label>
+                                <input type="text" name="book_title" value="{{ book.book_title }}" required>
+                            </div>
+
+                            <div class="form-row">
+                                <div class="form-group">
+                                    <label>Author</label>
+                                    <input type="text" name="book_author" value="{{ book.book_author }}" required>
+                                </div>
+                                <div class="form-group">
+                                    <label>Publisher</label>
+                                    <input type="text" name="book_publisher" value="{{ book.book_publisher }}" required>
+                                </div>
+                            </div>
+
+                            <div class="form-row">
+                                <div class="form-group">
+                                    <label>Category</label>
+                                    <input type="text" name="book_category" value="{{ book.book_category }}" required>
+                                </div>
+                                <div class="form-group">
+                                    <label>Shelf No.</label>
+                                    <input type="number" name="shelf_number" value="{{ book.shelf_number }}" min="1" required oninput="validateShelfNumber(this)">
+                                </div>
+                            </div>
+
+                            <div class="form-group">
+                                <label>Status</label>
+                                <select name="status" required>
+                                    <option value="available" {% if book.status == 'available' %}selected{% endif %}>Available</option>
+                                    <option value="borrowed" {% if book.status == 'borrowed' %}selected{% endif %}>Borrowed</option>
+                                </select>
+                            </div>
+
+                            <button type="submit" class="save-button">Save Changes</button>
+                        </form>
+                    </div>
+                </div>
             {% endfor %}
             </tbody>
         </table>
@@ -441,16 +489,18 @@
             }
         }
 
-        // Close modal when clicking outside
-        window.onclick = function(event) {
-            const modal = document.getElementById('addBookModal');
-            if (event.target === modal) {
-                modal.style.display = 'none';
+        function toggleUpdateForm(bookId) {
+            const modal = document.getElementById('updateBookModal-' + bookId);
+            if (modal) {
+                modal.style.display = modal.style.display === 'none' || !modal.style.display ? 'flex' : 'none';
             }
         }
 
-        function toggleUpdateForm(bookId) {
-            alert('Edit functionality to be implemented');
+        // Close modal when clicking outside
+        window.onclick = function(event) {
+            if (event.target.classList.contains('modal')) {
+                event.target.style.display = 'none';
+            }
         }
     </script>
 </body>
