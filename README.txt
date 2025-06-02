@@ -1,5 +1,6 @@
 LIBRAIN - Library Management System
-MEMBERS: Chris Angelo Rollon, Armand Christian N. Sta. Maria
+MEMBERS:  Chris Angelo Rollon
+          Armand Christian N. Sta. Maria
 
 A modern library management system built with Python Flask and MySQL.
 
