@@ -1,12 +1,14 @@
-from flask import Flask, render_template, request, redirect, session, flash
+from flask import Flask, render_template, request, redirect, session, flash, make_response
 import hashlib
+from functools import wraps
 
 from db import db, cursor
 from admin_backend import admin_bp  
 from librarian_backend import librarian_bp  
+from utils import no_cache
 
 app = Flask(__name__)
-app.secret_key = 'your_secret_key_here'  # Replace with a strong secret key in production
+app.secret_key = 'your_secret_key_here'
 
 app.register_blueprint(admin_bp, url_prefix='/admin')
 app.register_blueprint(librarian_bp, url_prefix='/librarian')
@@ -23,7 +25,6 @@ def login():
         user = cursor.fetchone()
         
         if user:
-            # Store minimal session data
             session['user_id'] = user['user_id']
             session['username'] = user['username']
             session['role'] = user['role']
@@ -73,6 +74,7 @@ def register():
     return render_template('register.html', error=error)
 
 @app.route('/dashboard')
+@no_cache
 def dashboard():
     if 'user_id' not in session:
         return redirect('/')
@@ -89,7 +91,11 @@ def dashboard():
 @app.route('/logout')
 def logout():
     session.clear()
-    return redirect('/')
+    response = make_response(redirect('/'))
+    response.headers['Cache-Control'] = 'no-store, no-cache, must-revalidate, post-check=0, pre-check=0, max-age=0'
+    response.headers['Pragma'] = 'no-cache'
+    response.headers['Expires'] = '-1'
+    return response
 
 if __name__ == '__main__':
     app.run(debug=True)

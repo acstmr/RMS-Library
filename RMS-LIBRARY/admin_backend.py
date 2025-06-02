@@ -1,6 +1,7 @@
 from flask import Blueprint, render_template, request, redirect, session, flash
 from functools import wraps
 from db import db, cursor
+from utils import no_cache
 
 admin_bp = Blueprint('admin_bp', __name__, template_folder='templates')
 
@@ -8,14 +9,13 @@ def admin_required(f):
     @wraps(f)
     def decorated_function(*args, **kwargs):
         if 'user_id' not in session or session.get('role') != 'admin':
-            flash("Unauthorized access.", "error")
             return redirect('/')
         return f(*args, **kwargs)
     return decorated_function
 
-
 @admin_bp.route('/students-admin')
 @admin_required
+@no_cache
 def students_admin():
     cursor.execute("SELECT * FROM lb_students")
     students = cursor.fetchall()
@@ -23,6 +23,7 @@ def students_admin():
 
 @admin_bp.route('/add-student', methods=['GET', 'POST'])
 @admin_required
+@no_cache
 def add_student():
     if request.method == 'POST':
         try:
@@ -52,6 +53,7 @@ def add_student():
 
 @admin_bp.route('/update-student/<int:student_id>', methods=['GET', 'POST'])
 @admin_required
+@no_cache
 def update_student(student_id):
     if request.method == 'POST':
         try:
@@ -85,6 +87,7 @@ def update_student(student_id):
 
 @admin_bp.route('/delete-student/<int:student_id>', methods=['POST'])
 @admin_required
+@no_cache
 def delete_student(student_id):
     try:
         cursor.execute("DELETE FROM lb_students WHERE student_id=%s", (student_id,))
@@ -95,9 +98,9 @@ def delete_student(student_id):
         flash("Failed to delete student.", "error")
     return redirect('/admin/students-admin')
 
-
 @admin_bp.route('/books-admin')
 @admin_required
+@no_cache
 def books_admin():
     cursor.execute("SELECT * FROM lb_books")
     books = cursor.fetchall()
@@ -105,6 +108,7 @@ def books_admin():
 
 @admin_bp.route('/add-book', methods=['GET', 'POST'])
 @admin_required
+@no_cache
 def add_book():
     if request.method == 'POST':
         try:
@@ -133,6 +137,7 @@ def add_book():
 
 @admin_bp.route('/update-book/<int:book_id>', methods=['GET', 'POST'])
 @admin_required
+@no_cache
 def update_book(book_id):
     if request.method == 'POST':
         try:
@@ -164,6 +169,7 @@ def update_book(book_id):
 
 @admin_bp.route('/delete-book/<int:book_id>', methods=['POST'])
 @admin_required
+@no_cache
 def delete_book(book_id):
     try:
         cursor.execute("DELETE FROM lb_books WHERE book_id=%s", (book_id,))
