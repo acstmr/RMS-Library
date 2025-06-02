@@ -305,22 +305,21 @@ def get_student_details(student_id):
     return {'error': 'Student not found'}, 404
 
 @librarian_bp.route('/delete-penalty/<int:penalty_id>', methods=['POST'])
+@librarian_required
+@no_cache
 def delete_penalty(penalty_id):
-    if 'user_id' not in session or session.get('role') != 'librarian':
-        return {'error': 'Unauthorized'}, 401
-
     try:
         cursor.execute("DELETE FROM lb_penalties WHERE penalty_id = %s", (penalty_id,))
         db.commit()
         
         if request.headers.get('X-Requested-With') == 'XMLHttpRequest':
-            return {'success': True, 'message': 'Penalty deleted successfully'}
+            return jsonify({'success': True, 'message': 'Penalty deleted successfully'})
             
         flash("Penalty deleted successfully.", "success")
         return redirect('/librarian/penalties')
     except Exception as e:
         db.rollback()
         if request.headers.get('X-Requested-With') == 'XMLHttpRequest':
-            return {'error': str(e)}, 500
+            return jsonify({'error': str(e)}), 500
         flash(f"Database error: {e}", "error")
         return redirect('/librarian/penalties')
